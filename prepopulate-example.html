@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Editor - Prepopulate Example</title>
+    
+    <!-- Load widget CSS -->
+    <link rel="stylesheet" href="./dist/rich-text-editor-widget.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        button, select {
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        select {
+            cursor: pointer;
+        }
+        
+        select:hover {
+            border-color: #667eea;
+        }
+        
+        .editor-wrapper {
+            margin-top: 20px;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            margin: 0 0 8px 0;
+            color: #1976d2;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Prepopulate Editor Example</h1>
+        <p class="subtitle">Demonstrates loading content from various events and sources</p>
+        
+        <div class="info-box">
+            <h3>💡 How It Works</h3>
+            <p>Use the <code>setContent()</code> method to programmatically set editor content from any event - button clicks, dropdowns, API calls, or localStorage!</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>📝 Load Template</label>
+                <select id="template-selector">
+                    <option value="">Select a template...</option>
+                    <option value="welcome">Welcome Email</option>
+                    <option value="announcement">Announcement</option>
+                    <option value="newsletter">Newsletter</option>
+                    <option value="meeting">Meeting Notes</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>💾 Saved Drafts</label>
+                <button id="save-draft">Save Current Draft</button>
+                <button id="load-draft">Load Saved Draft</button>
+            </div>
+            
+            <div class="control-group">
+                <label>🎨 Quick Actions</label>
+                <button id="load-sample">Load Sample Content</button>
+                <button id="clear-editor">Clear Editor</button>
+            </div>
+            
+            <div class="control-group">
+                <label>🌐 Simulate API</label>
+                <button id="fetch-content">Fetch from "API"</button>
+            </div>
+        </div>
+        
+        <div class="editor-wrapper">
+            <div id="my-editor"></div>
+        </div>
+        
+        <div class="status" id="status">Ready to load content...</div>
+    </div>
+
+    <!-- Load widget script -->
+    <script src="./dist/rich-text-editor-widget.umd.cjs"></script>
+
+    <script>
+        // Initialize the editor
+        const widget = new RichTextEditorWidget('my-editor', {
+            placeholder: 'Content will be loaded here...',
+            minHeight: '300px',
+            onChange: (content) => {
+                // Auto-save to localStorage on change
+                localStorage.setItem('auto-draft', content);
+            }
+        });
+        widget.mount();
+
+        // Templates
+        const templates = {
+            welcome: `
+                <h1>Welcome to Our Platform! 🎉</h1>
+                <p>Dear User,</p>
+                <p>We're excited to have you on board. Here's what you can do:</p>
+                <ul>
+                    <li>Explore our features</li>
+                    <li>Connect with other users</li>
+                    <li>Start creating amazing content</li>
+                </ul>
+                <p>Best regards,<br>The Team</p>
+            `,
+            announcement: `
+                <h2>📢 Important Announcement</h2>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                <p>We're pleased to announce exciting new updates:</p>
+                <ol>
+                    <li>Enhanced performance</li>
+                    <li>New features</li>
+                    <li>Improved user experience</li>
+                </ol>
+                <p>Stay tuned for more updates!</p>
+            `,
+            newsletter: `
+                <h1>Monthly Newsletter 📰</h1>
+                <h3>This Month's Highlights</h3>
+                <p>Here's what's been happening:</p>
+                <ul>
+                    <li><strong>Feature Update:</strong> New rich text editor</li>
+                    <li><strong>Community:</strong> 1000+ active users</li>
+                    <li><strong>Events:</strong> Upcoming webinar next week</li>
+                </ul>
+                <p><em>Thank you for being part of our community!</em></p>
+            `,
+            meeting: `
+                <h2>Meeting Notes 📝</h2>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                <p><strong>Attendees:</strong> Team Members</p>
+                <h3>Agenda</h3>
+                <ol>
+                    <li>Project updates</li>
+                    <li>Timeline review</li>
+                    <li>Next steps</li>
+                </ol>
+                <h3>Action Items</h3>
+                <ul>
+                    <li>[ ] Task 1</li>
+                    <li>[ ] Task 2</li>
+                    <li>[ ] Task 3</li>
+                </ul>
+            `
+        };
+
+        // Template selector
+        document.getElementById('template-selector').addEventListener('change', (e) => {
+            const template = e.target.value;
+            if (template && templates[template]) {
+                widget.setContent(templates[template]);
+                updateStatus(`✅ Loaded "${template}" template`);
+            }
+        });
+
+        // Save draft to localStorage
+        document.getElementById('save-draft').addEventListener('click', () => {
+            const content = widget.getContent();
+            localStorage.setItem('saved-draft', content);
+            updateStatus('💾 Draft saved to localStorage!');
+        });
+
+        // Load draft from localStorage
+        document.getElementById('load-draft').addEventListener('click', () => {
+            const draft = localStorage.getItem('saved-draft');
+            if (draft) {
+                widget.setContent(draft);
+                updateStatus('📂 Draft loaded from localStorage!');
+            } else {
+                updateStatus('⚠️ No saved draft found');
+            }
+        });
+
+        // Load sample content
+        document.getElementById('load-sample').addEventListener('click', () => {
+            const sampleContent = `
+                <h1>Sample Content</h1>
+                <p>This is <strong>bold text</strong> and this is <em>italic text</em>.</p>
+                <p style="text-align: center;">This text is centered.</p>
+                <ul>
+                    <li>First item</li>
+                    <li>Second item</li>
+                    <li>Third item</li>
+                </ul>
+                <p><a href="https://example.com">Click here</a> for more information.</p>
+            `;
+            widget.setContent(sampleContent);
+            updateStatus('✨ Sample content loaded!');
+        });
+
+        // Clear editor
+        document.getElementById('clear-editor').addEventListener('click', () => {
+            widget.clearContent();
+            updateStatus('🗑️ Editor cleared!');
+        });
+
+        // Simulate API fetch
+        document.getElementById('fetch-content').addEventListener('click', () => {
+            updateStatus('⏳ Fetching content from API...');
+            
+            // Simulate API delay
+            setTimeout(() => {
+                const apiContent = `
+                    <h2>Content from API 🌐</h2>
+                    <p>This content was "fetched" from a simulated API call.</p>
+                    <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
+                    <p>In a real application, this could be:</p>
+                    <ul>
+                        <li>Blog post from your CMS</li>
+                        <li>User profile data</li>
+                        <li>Product description</li>
+                        <li>Email template from server</li>
+                    </ul>
+                `;
+                widget.setContent(apiContent);
+                updateStatus('✅ Content loaded from API!');
+            }, 1000);
+        });
+
+        // Helper function to update status
+        function updateStatus(message) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.style.background = '#e8f5e9';
+            statusEl.style.color = '#2e7d32';
+            
+            setTimeout(() => {
+                statusEl.style.background = '#f0f0f0';
+                statusEl.style.color = '#666';
+            }, 3000);
+        }
+
+        // Load auto-saved content on page load
+        window.addEventListener('load', () => {
+            const autoDraft = localStorage.getItem('auto-draft');
+            if (autoDraft && autoDraft.trim() !== '') {
+                widget.setContent(autoDraft);
+                updateStatus('📝 Auto-saved content restored');
+            }
+        });
+
+        console.log('✅ Editor initialized with prepopulate functionality!');
+        console.log('Available methods:', {
+            setContent: 'widget.setContent(html)',
+            getContent: 'widget.getContent()',
+            clearContent: 'widget.clearContent()',
+            update: 'widget.update(options)',
+            unmount: 'widget.unmount()'
+        });
+    </script>
+</body>
+</html>

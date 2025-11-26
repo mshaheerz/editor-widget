@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Editor - Simple Example</title>
+    
+    <!-- Load widget CSS -->
+    <link rel="stylesheet" href="./dist/rich-text-editor-widget.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Rich Text Editor Example</h1>
+    <p>This is the simplest way to use the widget - just add <code>data-rich-text-editor</code> to any div with an ID!</p>
+    
+    <!-- The editor will auto-initialize -->
+    <div id="my-editor" 
+         data-rich-text-editor 
+         data-placeholder="Start typing your content here..." 
+         data-min-height="300px"></div>
+
+    <!-- Load widget script -->
+    <script src="./dist/rich-text-editor-widget.umd.cjs"></script>
+</body>
+</html>
