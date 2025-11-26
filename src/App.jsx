@@ -3,6 +3,7 @@ import RichTextEditor from './RichTextEditor'
 
 function App() {
   // State to hold the HTML content of the editor
+  // test
   const [content, setContent] = useState('<p>Hello World</p>')
 
   return (
